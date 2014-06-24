@@ -29,7 +29,9 @@ class Scope
 
     protected $parentScopes = array();
 
-    public function __construct(Manager $manager, ResourceInterface $resource, $currentScope = null)
+    protected $displayAvailableIncludes = false;
+
+    public function __construct(Manager $manager, ResourceAbstract $resource, $currentScope = null)
     {
         $this->manager = $manager;
         $this->currentScope = $currentScope;
@@ -143,6 +145,16 @@ class Scope
     }
 
     /**
+     * Display available includes
+     *
+     * @param bool $display
+     */
+    public function displayAvailableIncludes($display = true)
+    {
+        $this->displayAvailableIncludes = $display;
+    }
+
+    /**
      * Convert the current data for this scope to an array
      *
      * @api
@@ -177,6 +189,13 @@ class Scope
             if (! empty($pagination)) {
                 $this->resource->setMetaValue(key($pagination), current($pagination));
             }
+        }
+
+        if ($this->displayAvailableIncludes === true) {
+
+            $includes =  $serializer->serializeDisplayAvailableIncludes($this->resource->getTransformer());
+
+            $this->resource->setMetaValue(key($includes), current($includes));
         }
 
         // Pull out all of OUR metadata and any custom meta data to merge with the main level data
@@ -225,7 +244,7 @@ class Scope
 
         return array($transformedData, $includedData);
     }
-   
+
     /**
      * Serialize a resource
      *
@@ -262,7 +281,7 @@ class Scope
         } else {
             $transformedData = $transformer->transform($data);
         }
-            
+
         if ($this->transformerHasIncludes($transformer)) {
             $includedData = $this->fireIncludedTransformers($transformer, $data);
 
@@ -272,7 +291,7 @@ class Scope
                 $transformedData = array_merge($transformedData, $includedData);
             }
         }
-        
+
         return array($transformedData, $includedData);
     }
 
@@ -303,7 +322,7 @@ class Scope
         if (! $transformer instanceof TransformerAbstract) {
             return false;
         }
-        
+
         $defaultIncludes = $transformer->getDefaultIncludes();
         $availableIncludes = $transformer->getAvailableIncludes();
         return ! empty($defaultIncludes) or ! empty($availableIncludes);

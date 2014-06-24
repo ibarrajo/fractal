@@ -48,10 +48,18 @@ class Manager
     /**
      * Serializer
      * 
-     * @var \League\Fractal\Serializer\SerializerInterface
+     * @var \League\Fractal\Serializer\SerializerAbstract
      **/
     protected $serializer;
-    
+
+    /**
+     * Display available includes
+     * By default, this feature is disabled
+     *
+     * @var bool
+     */
+    protected $displayAvailableIncludes = false;
+
     /**
      * Create Data
      *
@@ -66,6 +74,11 @@ class Manager
     public function createData(ResourceAbstract $resource, $scopeIdentifier = null, $parentScopeInstance = null)
     {
         $scopeInstance = new Scope($this, $resource, $scopeIdentifier);
+
+        // If we want to display available includes
+        if ($this->displayAvailableIncludes) {
+            $scopeInstance->displayAvailableIncludes(true);
+        }
 
         // Update scope history
         if ($parentScopeInstance !== null) {
@@ -211,6 +224,16 @@ class Manager
     {
         $this->serializer = $serializer;
         return $this;
+    }
+
+    /**
+     * Display available includes
+     *
+     * @param bool $display
+     */
+    public function displayAvailableIncludes($display = true)
+    {
+        $this->displayAvailableIncludes = $display;
     }
 
     /**
