@@ -19,7 +19,7 @@ class ArraySerializer extends SerializerAbstract
 {
     /**
      * Serialize a collection
-     * 
+     *
      * @param  string  $resourceKey
      * @param  array  $data
      * @return array
@@ -31,7 +31,7 @@ class ArraySerializer extends SerializerAbstract
 
     /**
      * Serialize an item
-     * 
+     *
      * @param  string  $resourceKey
      * @param  array  $data
      * @return array
@@ -43,7 +43,7 @@ class ArraySerializer extends SerializerAbstract
 
     /**
      * Serialize the included data
-     * 
+     *
      * @param  string  $resourceKey
      * @param  array  $data
      * @return array
@@ -55,7 +55,7 @@ class ArraySerializer extends SerializerAbstract
 
     /**
      * Serialize the meta
-     * 
+     *
      * @param  array  $meta
      * @return array
      **/
@@ -66,6 +66,15 @@ class ArraySerializer extends SerializerAbstract
         }
 
         return array('meta' => $meta);
+    }
+
+    public function extraData($key, array $data)
+    {
+        if (empty($data)) {
+            return [];
+        }
+
+        return [$key => $data];
     }
 
     /**
@@ -102,7 +111,7 @@ class ArraySerializer extends SerializerAbstract
 
     /**
      * Serialize the cursor
-     * 
+     *
      * @param  \League\Fractal\Pagination\CursorInterface  $cursor
      * @return array
      **/

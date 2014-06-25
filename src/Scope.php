@@ -195,9 +195,11 @@ class Scope
 
             $includes =  $serializer->serializeDisplayAvailableIncludes($this->resource->getTransformer());
 
-            $this->resource->setMetaValue(key($includes), current($includes));
-        }
+            //$this->resource->setMetaValue(key($includes), current($includes));
+            $extraData = $serializer->extraData('embeds', current($includes));
 
+            $data = array_merge($data, $extraData);
+        }
         // Pull out all of OUR metadata and any custom meta data to merge with the main level data
         $meta = $serializer->meta($this->resource->getMeta());
 
