@@ -31,7 +31,7 @@ class Scope
 
     protected $displayAvailableIncludes = false;
 
-    public function __construct(Manager $manager, ResourceAbstract $resource, $currentScope = null)
+    public function __construct(Manager $manager, ResourceInterface $resource, $currentScope = null)
     {
         $this->manager = $manager;
         $this->currentScope = $currentScope;
