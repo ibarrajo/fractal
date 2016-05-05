@@ -192,7 +192,6 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(['data' => [['foo' => 'bar']]], $rootScope->toArray());
         $this->assertSame('{"data":[{"foo":"bar"}]}', $rootScope->toJson());
-
     }
 
     public function tearDown()
