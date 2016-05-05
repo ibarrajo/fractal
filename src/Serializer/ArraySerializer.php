@@ -14,15 +14,16 @@ namespace League\Fractal\Serializer;
 use League\Fractal\Pagination\CursorInterface;
 use League\Fractal\Pagination\PaginatorInterface;
 use League\Fractal\Resource\ResourceInterface;
+use League\Fractal\TransformerAbstract;
+
 
 class ArraySerializer extends SerializerAbstract
 {
     /**
-     * Serialize a collection.
+     * Serialize a collection
      *
-     * @param string $resourceKey
-     * @param array  $data
-     *
+     * @param  string  $resourceKey
+     * @param  array  $data
      * @return array
      */
     public function collection($resourceKey, array $data)
@@ -35,7 +36,6 @@ class ArraySerializer extends SerializerAbstract
      *
      * @param string $resourceKey
      * @param array  $data
-     *
      * @return array
      */
     public function item($resourceKey, array $data)
@@ -44,8 +44,10 @@ class ArraySerializer extends SerializerAbstract
     }
 
     /**
-     * Serialize null resource.
+     * Serialize the included data
      *
+     * @param  string  $resourceKey
+     * @param  array  $data
      * @return array
      */
     public function null()
@@ -67,10 +69,9 @@ class ArraySerializer extends SerializerAbstract
     }
 
     /**
-     * Serialize the meta.
+     * Serialize the meta
      *
-     * @param array $meta
-     *
+     * @param  array  $meta
      * @return array
      */
     public function meta(array $meta)
@@ -80,6 +81,15 @@ class ArraySerializer extends SerializerAbstract
         }
 
         return ['meta' => $meta];
+    }
+
+    public function extraData($key, array $data)
+    {
+        if (empty($data)) {
+            return [];
+        }
+
+        return [$key => $data];
     }
 
     /**
@@ -116,10 +126,9 @@ class ArraySerializer extends SerializerAbstract
     }
 
     /**
-     * Serialize the cursor.
+     * Serialize the cursor
      *
-     * @param CursorInterface $cursor
-     *
+     * @param  \League\Fractal\Pagination\CursorInterface  $cursor
      * @return array
      */
     public function cursor(CursorInterface $cursor)
@@ -132,5 +141,16 @@ class ArraySerializer extends SerializerAbstract
         ];
 
         return ['cursor' => $cursor];
+    }
+
+    /**
+     * Serialize available includes
+     *
+     * @param TransformerAbstract $transformer
+     * @return array
+     */
+    public function serializeDisplayAvailableIncludes(TransformerAbstract $transformer)
+    {
+        return array('availableIncludes' => $transformer->getAvailableIncludes());
     }
 }

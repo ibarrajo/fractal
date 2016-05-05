@@ -61,11 +61,13 @@ class Scope
      *
      * @return void
      */
-    public function __construct(Manager $manager, ResourceInterface $resource, $scopeIdentifier = null)
+    protected $displayAvailableIncludes = false;
+
+    public function __construct(Manager $manager, ResourceInterface $resource, $currentScope = null)
     {
         $this->manager = $manager;
         $this->resource = $resource;
-        $this->scopeIdentifier = $scopeIdentifier;
+        $this->scopeIdentifier = $currentScope;
     }
 
     /**
@@ -225,7 +227,18 @@ class Scope
     }
 
     /**
-     * Convert the current data for this scope to an array.
+     * Convert the current data for this scope to an array
+     * Display available includes
+     *
+     * @param bool $display
+     */
+    public function displayAvailableIncludes($display = true)
+    {
+        $this->displayAvailableIncludes = $display;
+    }
+
+    /**
+     * Convert the current data for this scope to an array
      *
      * @return array
      */
@@ -270,6 +283,15 @@ class Scope
             }
         }
 
+        if ($this->displayAvailableIncludes === true) {
+
+            $includes =  $serializer->serializeDisplayAvailableIncludes($this->resource->getTransformer());
+
+            //$this->resource->setMetaValue(key($includes), current($includes));
+            $extraData = $serializer->extraData('embeds', current($includes));
+
+            $data = array_merge($data, $extraData);
+        }
         // Pull out all of OUR metadata and any custom meta data to merge with the main level data
         $meta = $serializer->meta($this->resource->getMeta());
 
@@ -370,7 +392,7 @@ class Scope
             $transformedData = $this->manager->getSerializer()->mergeIncludes($transformedData, $includedData);
         }
 
-        return [$transformedData, $includedData];
+        return array($transformedData, $includedData);
     }
 
     /**

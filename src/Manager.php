@@ -60,13 +60,21 @@ class Manager
     protected $recursionLimit = 10;
 
     /**
-     * Serializer.
-     *
-     * @var SerializerAbstract
-     */
+     * Serializer
+     * 
+     * @var \League\Fractal\Serializer\SerializerAbstract
+     **/
     protected $serializer;
 
     /**
+     * Display available includes
+     * By default, this feature is disabled
+     *
+     * @var bool
+     */
+    protected $displayAvailableIncludes = false;
+
+   /**
      * Create Data.
      *
      * Main method to kick this all off. Make a resource then pass it over, and use toArray()
@@ -80,6 +88,11 @@ class Manager
     public function createData(ResourceInterface $resource, $scopeIdentifier = null, Scope $parentScopeInstance = null)
     {
         $scopeInstance = new Scope($this, $resource, $scopeIdentifier);
+
+        // If we want to display available includes
+        if ($this->displayAvailableIncludes) {
+            $scopeInstance->displayAvailableIncludes(true);
+        }
 
         // Update scope history
         if ($parentScopeInstance !== null) {
@@ -272,6 +285,16 @@ class Manager
         $this->serializer = $serializer;
 
         return $this;
+    }
+
+    /**
+     * Display available includes
+     *
+     * @param bool $display
+     */
+    public function displayAvailableIncludes($display = true)
+    {
+        $this->displayAvailableIncludes = $display;
     }
 
     /**
